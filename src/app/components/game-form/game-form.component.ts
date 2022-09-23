@@ -20,6 +20,8 @@ export class GameFormComponent implements OnInit {
     created_at: new Date()
   };
 
+  edit: boolean = false;
+
   constructor(private gameServices: GamesService, private router: Router, private activedRoute: ActivatedRoute) { }
 
   ngOnInit(): void {
@@ -30,6 +32,7 @@ export class GameFormComponent implements OnInit {
         res => {
           console.log(res);
           this.game = res;
+          this.edit = true;
         },
         err => console.log(err)
       )
@@ -47,6 +50,18 @@ export class GameFormComponent implements OnInit {
         },
         error: (err) => console.log(err)
       })
+  }
+
+  updateGame() {
+    delete this.game.created_at;
+    const params = this.activedRoute.snapshot.params;
+    this.gameServices.updateGame(params['id'], this.game).subscribe(
+      res => {
+        console.log(res);
+        this.router.navigate(['/games']);
+      },
+      err => console.error(err)
+    )
   }
 
 }
